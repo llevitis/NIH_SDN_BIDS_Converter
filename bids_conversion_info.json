@@ -5,18 +5,18 @@
   		"sag_cube_t2": "anat-T2w",
   		"resting_epi_3mm_iso_rs": "func-bold_task-rest",
   		"edti_2mm_cdif45_ap": "dwi_acq-AP",
-                "edti_2mm_cdif45_pa": "dwi_acq-PA",
+        "edti_2mm_cdif45_pa": "dwi_acq-PA",
   		"me_mp_rage_1mm_promo_echo-1": "anat-T1w_acq-multiecho_echo-1",
-                "me_mp_rage_1mm_promo_echo-2": "anat-T1w_acq-multiecho_echo-2",
-                "me_mp_rage_1mm_promo_echo-3": "anat-T1w_acq-multiecho_echo-3",
-                "me_mp_rage_1mm_promo_echo-4": "anat-T1w_acq-multiecho_echo-4",
+        "me_mp_rage_1mm_promo_echo-2": "anat-T1w_acq-multiecho_echo-2",
+        "me_mp_rage_1mm_promo_echo-3": "anat-T1w_acq-multiecho_echo-3",
+        "me_mp_rage_1mm_promo_echo-4": "anat-T1w_acq-multiecho_echo-4",
  		"reverse_blip_resting_epi_3mm_iso": "anat-T2star",
   		"t2_1.7mm_fat_sat": "anat-T2w_acq-fatsat",
   		"orig_anat_t1w_sag_mp_rage_1mm": "anat-T1w_rec-orig",
   		"orig_sag_cube_t2": "anat-T2w_rec-orig",
   		"orig_me_mp_rage_1mm_promo_echo-1": "anat-T1w_acq-multiecho_rec-orig_echo-1",
-                "orig_me_mp_rage_1mm_promo_echo-2": "anat-T1w_acq-multiecho_rec-orig_echo-2",
-                "orig_me_mp_rage_1mm_promo_echo-3": "anat-T1w_acq-multiecho_rec-orig_echo-3",
-                "orig_me_mp_rage_1mm_promo_echo-4": "anat-T1w_acq-multiecho_rec-orig_echo-4"
+        "orig_me_mp_rage_1mm_promo_echo-2": "anat-T1w_acq-multiecho_rec-orig_echo-2",
+        "orig_me_mp_rage_1mm_promo_echo-3": "anat-T1w_acq-multiecho_rec-orig_echo-3",
+        "orig_me_mp_rage_1mm_promo_echo-4": "anat-T1w_acq-multiecho_rec-orig_echo-4"
 	}
 }

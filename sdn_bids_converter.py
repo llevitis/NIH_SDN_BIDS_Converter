@@ -69,7 +69,7 @@ def parse_json(json_file):
 def extract_mr_dir_description(readme_path): 
     readme_dict_orig = {} 
     # creating dictionary 
-    with open(os.path.join(curr_dir, "README-Study.txt")) as fh: 
+    with open(readme_path) as fh: 
         for line in fh: 
             # reads each line and trims of extra the spaces  
             # and gives only the valid words 

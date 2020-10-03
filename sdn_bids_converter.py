@@ -3,7 +3,7 @@ import logging
 import re
 from subprocess import call
 import json
-from time import sleep
+from argparse import ArgumentParser 
 
 SCAN_EXPR = """\
 ^(?P<rec_ex>PU:)?\
@@ -98,63 +98,92 @@ def extract_mr_dir_description(readme_path):
     return mr_dir_dict
     
 def main():
-    
-    ### add code for walking through the directory and accessing subject and session directories
-    
-    
-    mr_dir_dict = extract_mr_dir_description(os.path.join(ses_dir, "README-Study.txt"))
-    
-    for mr_key in mr_dir_dict.keys():
-        sub_name = 'sub-' + mr_dir_dict['subject'] 
-    ses_name = 'ses-' + mr_dir_dict['session']
-    scan = mr_dir_dict[mr_key]
-    dest = input_dict['destination']
-    if scan in scan_repl_dict.keys():
-        print('{scan} is a part of dictionary'.format(scan=scan))
-        dcm_dir = os.path.join(curr_dir, mr_key)
-        bids_scan = scan_repl_dict[scan]
-        # PU:task-rest_bold -> PU_task_rest_bold
-        scan_fmt = re.sub(r'[^\w]', '_', scan)        
-        scan_pattern = re.compile(SCAN_EXPR)
 
-        scan_pattern_dict = re.search(scan_pattern, bids_scan).groupdict()
+    parser = ArgumentParser()
+    parser.add_argument("--bids_conversion_info",
+                        help="Please pass the path to the bids conversion info JSON file.")
+    results = parser.parse_args()
+    bids_conversion_info = results.bids_conversion_info
 
-        # build up the bids directory
-        bids_dir = os.path.join(dest, sub_name, ses_name, scan_pattern_dict['modality'])
-        if not os.path.isdir(bids_dir):
-            os.makedirs(bids_dir)
-        
-        # name the bids file
-        fname = '_'.join([sub_name, ses_name])
+    input_dict = parse_json(bids_conversion_info)
+    scan_repl_dict = input_dict.get('scan_dict', None)
+    nih_sdn_raw_dir = input_dict.get('nih_sdn_raw_dir', None)
+    for sub_dir in os.listdir(nih_sdn_raw_dir): 
+        sub_dir = os.path.join(nih_sdn_raw_dir, sub_dir)
+        # session number
+        i = 1
+        subject = sub_dir.split("/")[-1].split("-")[1]
+        for ses_dir in os.listdir(sub_dir):
+            ses_dir = os.path.join(sub_dir, ses_dir)
+            session = "v0" + str(i)
+            mr_dir_dict = extract_mr_dir_description(os.path.join(ses_dir, "README-Study.txt"))
+            mr_dir_dict['subject'] = subject
+            mr_dir_dict['session'] = session           
+            k=1
+            j=1
+            for key in mr_dir_dict.keys(): 
+                if mr_dir_dict[key] == "me_mp_rage_1mm_promo": 
+                    mr_dir_dict[key] = "me_mp_rage_1mm_promo_echo-{0}".format(k) 
+                    k += 1
+                elif mr_dir_dict[key] == "orig_me_mp_rage_1mm_promo": 
+                    mr_dir_dict[key] = "orig_me_mp_rage_1mm_promo_echo-{0}".format(j) 
+                    j += 1
+            
+            i += 1
+            
+            for mr_key in mr_dir_dict.keys():
+                sub_name = 'sub-' + mr_dir_dict['subject'] 
+                ses_name = 'ses-' + mr_dir_dict['session']
+                scan = mr_dir_dict[mr_key]
+                dest = input_dict['destination']
+                if scan in scan_repl_dict.keys():
+            #         print('{scan} is a part of dictionary'.format(scan=scan))
+                    dcm_dir = os.path.join(ses_dir, mr_key)
+                    bids_scan = scan_repl_dict[scan]
+                    # PU:task-rest_bold -> PU_task_rest_bold
+                    scan_fmt = re.sub(r'[^\w]', '_', scan)        
+                    scan_pattern = re.compile(SCAN_EXPR)
 
-        bids_keys_order = ['task', 'acq', 'ce', 'rec', 'rec_ex', 'dir', 'run', 'echo']
+                    scan_pattern_dict = re.search(scan_pattern, bids_scan).groupdict()
 
-        for key in bids_keys_order:
-            label = scan_pattern_dict[key]
-            if label is not None:
-                if key == 'rec_ex':
-                    key = 'rec'
-                    label = 'pu'
-                fname = '_'.join([fname, key + '-' + label])
+                    # build up the bids directory
+                    bids_dir = os.path.join(dest, sub_name, ses_name, scan_pattern_dict['modality'])
+            #         print(bids_dir)
+                    if not os.path.isdir(bids_dir):
+                        os.makedirs(bids_dir)
 
-        # add the label (e.g. _bold)
-        if scan_pattern_dict['label'] is None:
-            label = scan_pattern_dict['modality']
-        else:
-            label = scan_pattern_dict['label']
+                    # name the bids file
+                    fname = '_'.join([sub_name, ses_name])
 
-        fname = '_'.join([fname, label])
+                    bids_keys_order = ['task', 'acq', 'ce', 'rec', 'rec_ex', 'dir', 'run', 'echo']
 
-        print('the dcm dir is {dcm_dir}'.format(dcm_dir=dcm_dir))
-        dcm2niix = 'dcm2niix -o {bids_dir} -f {fname} -z y -b y {dcm_dir}'.format(
-            bids_dir=bids_dir,
-            fname=fname,
-            dcm_dir=dcm_dir)
-        bids_outfile = os.path.join(bids_dir, fname + '.nii.gz')
-        print(bids_outfile)
-        if not os.path.exists(bids_outfile) or overwrite_nii:
-            call(dcm2niix, shell=True)
-        else:
-            print('It appears the nifti file already exists for {scan}'.format(scan=scan))
+                    for key in bids_keys_order:
+                        label = scan_pattern_dict[key]
+                        if label is not None:
+                            if key == 'rec_ex':
+                                key = 'rec'
+                                label = 'pu'
+                            fname = '_'.join([fname, key + '-' + label])
 
+                    # add the label (e.g. _bold)
+                    if scan_pattern_dict['label'] is None:
+                        label = scan_pattern_dict['modality']
+                    else:
+                        label = scan_pattern_dict['label']
 
+                    fname = '_'.join([fname, label])
+
+            #         print('the dcm dir is {dcm_dir}'.format(dcm_dir=dcm_dir))
+                    dcm2niix = 'dcm2niix -o {bids_dir} -f {fname} -z y -b y {dcm_dir}'.format(
+                        bids_dir=bids_dir,
+                        fname=fname,
+                        dcm_dir=dcm_dir)
+                    bids_outfile = os.path.join(bids_dir, fname + '.nii.gz')
+                    print(bids_outfile)
+                    if not os.path.exists(bids_outfile) or overwrite_nii:
+                        call(dcm2niix, shell=True)
+                    else:
+                        print('It appears the nifti file already exists for {scan}'.format(scan=scan))
+
+if __name__ == "__main__":
+    main()

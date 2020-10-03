@@ -1,5 +1,6 @@
 {
-	"destination": "/Users/liza/data/NIH_SDN_BIDS",
+        "nih_sdn_raw_dir": "/Users/levitise2/code/test_bids_conversion/data",
+	"destination": "/Users/levitise2/code/test_bids_conversion/NIH_SDN_BIDS",
  	"scan_dict": {
 		"anat_t1w_sag_mp_rage_1mm": "anat-T1w",
   		"sag_cube_t2": "anat-T2w",

@@ -47,35 +47,37 @@ def infotodict(seqinfo):
         * image_type
         """
 
-    t1w = create_key('sub-{subject}/ses-{session}/anat/sub-{subject}_ses-{session}_T1w')
-    t2w = create_key('sub-{subject}/ses-{session}/anat/sub-{subject}_ses-{session}_T2w')
-    func_rest = create_key('sub-{subject}/ses-{session}/func/sub-{subject}_ses-{session}_task-rest_bold')
-    dwi_ap = create_key('sub-{subject}/ses-{session}/dwi/sub-{subject}_ses-{session}_acq-AP_dwi')
-    dwi_pa = create_key('sub-{subject}/ses-{session}/dwi/sub-{subject}_ses-{session}_acq-PA_dwi')
-    t2star = create_key('sub-{subject}/ses-{session}/dwi/sub-{subject}_ses-{session}_T2star')
-    t2w_fatsat = create_key('sub-{subject}/ses-{session}/anat/sub-{subject}_ses-{session}_acq-fatsat_T2w')
-    t1w_orig = create_key('sub-{subject}/ses-{session}/anat/sub-{subject}_ses-{session}_rec-orig_T1w')
-    t2w_orig = create_key('sub-{subject}/ses-{session}/anat/sub-{subject}_ses-{session}_rec-orig_T2w')
+    t1w = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_T1w')
+    t2w = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_T2w')
+    func_rest = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-rest_bold')
+    dwi_ap = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-AP_dwi')
+    dwi_pa = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-PA_dwi')
+    t2star = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_T2star')
+    t2w_fatsat = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-fatsat_T2w')
+    t1w_orig = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_rec-orig_T1w')
+    t2w_orig = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_rec-orig_T2w')
     
     info = {t1w: [], t2w: [], func_rest: [], dwi_ap: [], dwi_pa: [], t2star: [], t2w_fatsat: [], 
             t1w_orig: [], t2w_orig: []}
 
     for idx, s in enumerate(seqinfo):
-        if ('Anat T1w Sag MP-RAGE 1mm' in s.series_description):
+        if (s.series_description == 'Anat T1w Sag MP-RAGE 1mm'):
             info[t1w].append(s.series_id)
-        if ('ORIG Anat T1w Sag MP-RAGE 1mm' in s.series_description):
+        if (s.series_description == 'ORIG Anat T1w Sag MP-RAGE 1mm'):
             info[t1w_orig].append(s.series_id)
         if ('edti_2mm_cdif45_AP' in s.series_description):
             info[dwi_ap].append(s.series_id)
         if ('edti_2mm_cdif45_PA' in s.series_description):
             info[dwi_pa].append(s.series_id)
-        if ('Sag CUBE T2' in s.series_description):
-            info[t2w].append(s.series_id) 
+        if (s.series_description == 'Sag CUBE T2'):
+            info[t2w].append(s.series_id)
+        if (s.series_description == 'ORIG Sag CUBE T2'):
+            info[t2w_orig].append(s.series_id)
         if ('T2_1.7mm_fat_sat' in s.series_description): 
             info[t2w_fatsat].append(s.series_id)
-        if ('Reverse blip EPI 3mm iso' in s.series_description):
+        if (s.series_description == 'Reverse blip EPI 3mm iso'):
             info[t2star].append(s.series_id) 
-        if ('Resting EPI 3mm iso RS' in s.series_description):
+        if (s.series_description == 'Resting EPI 3mm iso RS') and (s.dim3 == 12300):
             info[func_rest].append(s.series_id)
     return info
         

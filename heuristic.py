@@ -61,9 +61,9 @@ def infotodict(seqinfo):
             t1w_orig: [], t2w_orig: []}
 
     for idx, s in enumerate(seqinfo):
-        if (s.series_description == 'Anat T1w Sag MP-RAGE 1mm'):
+        if (s.series_description == 'Anat T1w Sag MP-RAGE 1mm') or (s.series_description == 'Anat T1w MP-RAGE 1mm (FS)'):
             info[t1w].append(s.series_id)
-        if (s.series_description == 'ORIG Anat T1w Sag MP-RAGE 1mm'):
+        if (s.series_description == 'ORIG Anat T1w Sag MP-RAGE 1mm') or (s.series_description == 'ORIG Anat T1w MP-RAGE 1mm (FS)'):
             info[t1w_orig].append(s.series_id)
         if ('edti_2mm_cdif45_AP' in s.series_description):
             info[dwi_ap].append(s.series_id)

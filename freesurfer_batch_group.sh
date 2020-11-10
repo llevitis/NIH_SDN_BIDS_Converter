@@ -12,6 +12,7 @@ singularity run \
 /data/DNU/liza/data/XXY/Nifti/derivatives/Freesurfer \
 group2 \
 --participant_label $(xargs --arg-file=subs_with_t1w.txt echo) \
+--measurements area volume thickness thicknessstd meancurv gauscurv foldind curvind \
 --license_file "/data/DNU/liza/license.txt" \
 --skip_bids_validator
 

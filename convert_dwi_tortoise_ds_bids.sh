@@ -9,15 +9,14 @@ sub=$3
 ses=$4
 bids_dir=$5
 
-# for each subject, copy only the dwi data to a separate directory (find out if symlink is an alt)
-# have to determine which series corresponds to AP and PA
+# for each subject, copy only the dwi data to a separate directory
 # copy over the gradients file
 
 dwi_dicom_sub=${dwi_dicom_dir}/sub-${sub}
 dicom_readme=${dicom_dir}/sub-${sub}/ses-${ses}/*/README-Study.txt
-g01_num=`cat ${dicom_readme} | grep "edti_2mm_cdif08_g01" | cut -d "," -f 3 | cut -d ":" -f 2`
-g02_num=`cat ${dicom_readme} | grep "edti_2mm_cdif08_g02" | cut -d "," -f 3 | cut -d ":" -f 2`
-g03_num=`cat ${dicom_readme} | grep "edti_2mm_cdif08_g03" | cut -d "," -f 3 | cut -d ":" -f 2`
+g01_num=`cat ${dicom_readme} | grep "edti_cdiflist08_g01" | cut -d "," -f 3 | cut -d ":" -f 2`
+g02_num=`cat ${dicom_readme} | grep "edti_cdiflist08_g02" | cut -d "," -f 3 | cut -d ":" -f 2`
+g03_num=`cat ${dicom_readme} | grep "edti_cdiflist08_g03" | cut -d "," -f 3 | cut -d ":" -f 2`
 g01_dicom_dir=${dicom_dir}/sub-${sub}/ses-${ses}/*/${g01_num}
 g02_dicom_dir=${dicom_dir}/sub-${sub}/ses-${ses}/*/${g02_num}
 g03_dicom_dir=${dicom_dir}/sub-${sub}/ses-${ses}/*/${g03_num}
@@ -25,6 +24,7 @@ gradients_file=${dwi_dicom_dir}/cdiflist08
 
 if [ ! -x $dwi_dicom_sub ]
 then
+    mkdir -p $dwi_dicom_sub
     mkdir -p $dwi_dicom_sub/dicom
     mkdir $dwi_dicom_sub/dicom/g01_dicom_dir
     mkdir $dwi_dicom_sub/dicom/g02_dicom_dir

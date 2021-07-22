@@ -5,7 +5,7 @@
 #SBATCH --mem-per-cpu=4G
 #SBATCH --time=12:00:00
 
-module load xcpengine/1.2.3
+module load xcpengine/1.2.4
 
 LINE_NUM=$( expr $SLURM_ARRAY_TASK_ID + 1 )
 LINE=$(awk "NR==$LINE_NUM" /data/DNU/liza/code/NIH_SDN_BIDS_Converter/xyy_xcp_cohort_file_mniSpace.csv)
